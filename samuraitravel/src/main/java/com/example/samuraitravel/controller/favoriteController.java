@@ -38,9 +38,8 @@ public class favoriteController {
 	
 	@GetMapping("/favorite")
 	public String index(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable, Model model) {
-		User user = userDetailsImpl.getUser();
+		User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
 		Page<Favorite> favoritePage = favoriteRepository.findByUserOrderByCreatedAtDesc(user, pageable);
-		
 		model.addAttribute("favoritePage", favoritePage);
 		
 		return "favorite/index";

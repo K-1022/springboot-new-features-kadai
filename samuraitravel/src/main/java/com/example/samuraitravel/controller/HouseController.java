@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,13 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.samuraitravel.entity.Favorite;
 import com.example.samuraitravel.entity.House;
 import com.example.samuraitravel.entity.Review;
-import com.example.samuraitravel.entity.User;
 import com.example.samuraitravel.form.ReservationInputForm;
 import com.example.samuraitravel.repository.FavoriteRepository;
 import com.example.samuraitravel.repository.HouseRepository;
 import com.example.samuraitravel.repository.ReviewRepository;
-import com.example.samuraitravel.repository.UserRepository;
-import com.example.samuraitravel.security.UserDetailsImpl;
 
 @Controller
 @RequestMapping("/houses")
@@ -31,13 +27,11 @@ public class HouseController {
 	private final HouseRepository houseRepository;
 	private final ReviewRepository reviewRepository;
 	private final FavoriteRepository favoriteRepository;
-	private final UserRepository userRepository;
 	
-	public HouseController(HouseRepository houseRepository, ReviewRepository reviewrepository, FavoriteRepository favoriteRepository, UserRepository userRepository) {
+	public HouseController(HouseRepository houseRepository, ReviewRepository reviewrepository, FavoriteRepository favoriteRepository) {
 		this.houseRepository = houseRepository;
 		this.reviewRepository = reviewrepository;
 		this.favoriteRepository = favoriteRepository;
-		this.userRepository = userRepository;
 	}
 	
 	@GetMapping
@@ -91,20 +85,16 @@ public class HouseController {
 	@GetMapping("/{id}")
 	public String show(@PathVariable(name = "id") Integer id,  		         
 			           @RequestParam(name = "houseId", required = false) Integer houseId,
-			           @AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
 			           Model model) {
 		
-		House house =houseRepository.getReferenceById(id);
-		User user = userRepository.getReferenceById(userDetailsImpl.getUser().getId());
-		
-         List<Review>reviewPage = reviewRepository.findTop6ByHouseIdOrderByCreatedAtDesc(id); 
+	   House house =houseRepository.getReferenceById(id);
+	   
+       List<Review>reviewPage = reviewRepository.findTop6ByHouseIdOrderByCreatedAtDesc(id);       
          
-//         <Favorite>favoritePage = favoriteRepository.findByHouseIdAndUserId(id, user.getId());
-       Favorite favorite = favoriteRepository.findByHouseIdAndUserId(id, user.getId());
-System.out.println(favorite);
+       Favorite favorite = favoriteRepository.findByHouseId(id);
+
      
 		model.addAttribute("house", house);
-		model.addAttribute("user", user);
 		model.addAttribute("reservationInputForm", new ReservationInputForm());
 		model.addAttribute("houseId", id);
 		model.addAttribute("reviewPage", reviewPage);

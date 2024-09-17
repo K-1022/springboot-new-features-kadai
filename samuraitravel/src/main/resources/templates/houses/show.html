@@ -36,8 +36,7 @@
 							　　</div>
 							
 							　　<div th:unless="${#lists.isEmpty(favorite)}">						 
-                                 　<form method="post" th:action="@{/houses/__${houseId}__/favorite/__${favorite.getId()}__/delete}">	
-									 
+                                 　<form method="post" th:action="@{/houses/__${houseId}__/favorite/__${favorite.getId()}__/delete}">									 
 					              　　　<button type="submit" class="btn btn-link text-decoration-none right">&#9829お気に入り解除</button>							
 						    　　　</form>
 							　　</div>

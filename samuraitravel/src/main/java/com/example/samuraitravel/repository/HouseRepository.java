@@ -24,7 +24,6 @@ public interface HouseRepository extends JpaRepository<House, Integer>{
 
 public House getReferenceById(House houseId);
 
-
   
   
 }
